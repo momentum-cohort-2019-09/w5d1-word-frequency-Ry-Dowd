@@ -21,7 +21,7 @@ def filter_stop_words(string, stop_words):
       
     
 def create_frequency_dictionary(string):
-    """Takes a string and returns a dictionary where the keys are the words in that string and their values are the number of times that word occurs"""
+    """Takes a lowercase, depunctuated string and returns a dictionary where the keys are the words in that string and their values are the number of times that word occurs"""
     frequency_dictionary = {}
     string_as_list = string.split()
     for word in string_as_list:
@@ -40,25 +40,32 @@ def print_word_freq(file):
     filtered = filter_stop_words(punctuation_removed, STOP_WORDS)
     frequency_dictionary = create_frequency_dictionary(filtered)
     dictionary_items = (frequency_dictionary.items())
+    
+    max_length = max(len(key)for key in frequency_dictionary)
+    def indent_print(item):
+        spaces = ' '*(max_length -len(item[0]))
+        return spaces
+        
+        
+    
     sorted_frequency = sorted(dictionary_items, key=get_frequency, reverse=True)
     for item in sorted_frequency:
-        print(item[0] + ' | ' + str(item[1]))
-
-print_word_freq('seneca_falls.txt')
+        print(f"{indent_print(item)} "+ item[0] + ' | ' + str(item[1]) + " "*(3-len(str(item[1]))) + "*"*item[1])
 
 
-# if __name__ == "__main__":
-#     import argparse
-#     from pathlib import Path
 
-#     parser = argparse.ArgumentParser(
-#         description='Get the word frequency in a text file.')
-#     parser.add_argument('file', help='file to read')
-#     args = parser.parse_args()
+if __name__ == "__main__":
+    import argparse
+    from pathlib import Path
 
-#     file = Path(args.file)
-#     if file.is_file():
-#         print_word_freq(file)
-#     else:
-#         print(f"{file} does not exist!")
-#         exit(1)
+    parser = argparse.ArgumentParser(
+        description='Get the word frequency in a text file.')
+    parser.add_argument('file', help='file to read')
+    args = parser.parse_args()
+
+    file = Path(args.file)
+    if file.is_file():
+        print_word_freq(file)
+    else:
+        print(f"{file} does not exist!")
+        exit(1)
